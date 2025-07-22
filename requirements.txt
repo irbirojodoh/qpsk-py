@@ -1,0 +1,12 @@
+# Core dependencies
+numpy>=1.19.0
+matplotlib>=3.3.0
+scipy>=1.6.0
+# Note: tkinter is usually included with Python, but if not:
+# sudo apt-get install python3-tk
+gnuradio>=3.8.0
+
+# Optional dependencies for development
+pytest>=6.0
+black
+flake8

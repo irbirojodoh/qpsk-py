@@ -239,7 +239,7 @@ class QpskPacketModulator(gr.top_block):
         self.connect((self.digital_constellation_modulator, 0), (self.blocks_multiply_const, 0))
         self.connect((self.blocks_multiply_const, 0), (self.vector_sink, 0))
 
-def create_packet_signal(message="TESTING FROM USRP 1", sequence_number=0, 
+def create_packet_signal(message="HELLO FROM TX", sequence_number=0, 
                         sps=16, alpha=0.5, samp_rate=1e6):
     """
     Generate QPSK modulated signal from packet data
@@ -382,7 +382,7 @@ def main():
     gain = 20            # Transmit gain in dB
     sps = 16             # Samples per symbol
     alpha = 0.5          # Excess bandwidth
-    message = "TESTING FROM USRP 1"  # Message to transmit
+    message = "HELLO TX"  # Message to transmit
     
     print("=== Packet-based QPSK Transmitter with Hamming Code ===")
     print(f"Message: '{message}'")
