@@ -101,7 +101,12 @@ def main():
             # Create plot display
             plot_display = start_live_plot_display(receiver, update_interval=args.update_rate)
             
-            if args.plot_blocking:
+            if plot_display is None:
+                # Plotting not available, fall back to terminal only
+                print("Plotting not available, continuing with terminal display only...")
+                while True:
+                    time.sleep(1)
+            elif args.plot_blocking:
                 print("Starting plots in blocking mode...")
                 print("Close the plot window to stop the receiver.")
                 # This will block in the main thread until window is closed

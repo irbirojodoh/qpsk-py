@@ -7,18 +7,43 @@ import threading
 import numpy as np
 from collections import deque
 import matplotlib
-# Try different backends in order of preference
-try:
-    matplotlib.use('Qt5Agg')  # Try Qt5 first
-except ImportError:
-    try:
-        matplotlib.use('TkAgg')  # Then Tk
-    except ImportError:
-        try:
-            matplotlib.use('Agg')  # Fallback to non-interactive
-            print("Warning: Using non-interactive matplotlib backend")
-        except ImportError:
-            print("Warning: No suitable matplotlib backend found")
+import os
+
+# Detect if we're in a headless environment and set appropriate backend
+def set_matplotlib_backend():
+    """Set matplotlib backend based on environment capabilities"""
+    # Check if we're in a headless environment
+    display = os.environ.get('DISPLAY', '')
+    headless = display == '' or display is None
+    
+    if headless:
+        # Force non-interactive backend for headless environments
+        matplotlib.use('Agg')
+        print("Info: Using non-interactive matplotlib backend (headless environment)")
+        return False  # No interactive plotting available
+    else:
+        # Try interactive backends in order of preference
+        backends_to_try = ['Qt5Agg', 'TkAgg', 'Qt4Agg']
+        
+        for backend in backends_to_try:
+            try:
+                matplotlib.use(backend)
+                # Test if the backend actually works by creating a test figure
+                import matplotlib.pyplot as plt
+                fig = plt.figure()
+                plt.close(fig)
+                print(f"Info: Using {backend} matplotlib backend")
+                return True  # Interactive plotting available
+            except Exception:
+                continue
+        
+        # If no interactive backend works, fall back to non-interactive
+        matplotlib.use('Agg')
+        print("Warning: No interactive matplotlib backend available, using non-interactive mode")
+        return False
+
+# Set the backend and check if interactive plotting is available
+INTERACTIVE_PLOTTING_AVAILABLE = set_matplotlib_backend()
 
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
@@ -458,5 +483,10 @@ Total Bits:    {len(bits):6d}"""
 
 def start_live_plot_display(receiver, update_interval=0.2):
     """Start live plotting display - must be called from main thread"""
+    if not INTERACTIVE_PLOTTING_AVAILABLE:
+        print("Warning: Interactive plotting not available in headless environment")
+        print("Continuing with terminal-only display...")
+        return None
+    
     display = LivePlotDisplay(receiver, update_interval)
     return display  # Return display object so caller can start it

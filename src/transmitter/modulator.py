@@ -96,8 +96,8 @@ def create_packet_signal(message="HELLO FROM TX", sequence_number=0,
     # Run the flowgraph to generate samples
     modulator.start()
     
-    # Let it run to generate samples
-    time.sleep(1.0)  # Longer time to ensure packet generation
+    # Let it run to generate samples - reduced time for faster operation
+    time.sleep(0.2)  # Reduced from 1.0s to 0.2s for faster generation
     
     # Stop and get the data
     modulator.stop()
